@@ -1,60 +1,79 @@
 const path = require('path')
-const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const fs = require('fs')
-
-let featureName = 'h5'
-let page = null
-process.argv.some(function (arg) {
-  console.log(arg)
-  let arr = arg.match(/\-\-env=([a-zA-Z0-9\-_,]+)/)
-  if (arr) {
-    let config = arr[1].split(',')
-
-    featureName = config[0]
-    if (config[1]) {
-      page = config[1]
-    }
-  }
-})
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = {
-  entry: path.join(__dirname, 'src/' + featureName + '/pages/' + page + '.js'),
   mode: 'development',
+  entry: './src/main.js',
   output: {
-    filename: 'bundle.js',
-    path: path.join(__dirname, 'dist'),
-    filename: featureName + '/[name].js'
+    filename: 'dist.js',
+    path: path.resolve(__dirname, './dist')
   },
   module: {
-    rules: [
-      {
-        test: /\.vue$/,
-        loader: 'vue-loader'
+    rules: [{
+      test: /\.(png|jpe?g|gif|webp)$/,
+      use: [
+        {
+          loader: 'url-loader',
+          options: {
+            esModule: false, // 最新版本这里要设置为false
+            name: '[name].[ext]',
+            outputPath: 'imgs/',
+            limit: 10240
+          }
+        }
+      ]
+    },
+    {
+      test: /\.css$/,
+      use: ['style-loader', 'css-loader']
+    },
+    {
+      test: /\.styl(us)?$/,
+      use: [
+        // 'style-loader',
+        {
+          loader: MiniCssExtractPlugin.loader,
+          options: {
+            public: '../',
+            hmr: process.env.NODE_ENV === 'development',
+            reloadAll: true
+          },
+        },
+        {
+          loader: 'css-loader',
+          options: {
+            importLoaders: 2 // 在css-loader 前执行的loader数量
+          }
+        },
+        'postcss-loader',
+        {
+          loader: 'stylus-loader',
+          options: {
+            preferPathResolver: 'webpack' // 优先使用webpack进行路径解析，找不到再用stylus-loader 的路径解析
+          }
+        }
+      ]
+    },
+    {
+      test: /\.(woff2?|eot|ttf|otf|svg)(\?.*)?$/i,
+      use: {
+        loader: 'file-loader',
+        options: {
+          name: '[name].[ext]',
+          outputPath: 'fonts/'
+        }
       }
+    }
     ]
   },
-  resolve: {
-    extensions: [
-      '.vue', '.js'
-    ],
-    modules: ["node_modules"],
-    alias: {
-      vue: 'vue/dist/vue.min.js',
-      store: __dirname + '/src/store',
-      components: path.resolve(__dirname + '/src/components/'),
-      '@': path.resolve('src')
-    }
-  },
   plugins: [
-    new HtmlWebpackPlugin(),
-    new VueLoaderPlugin(),
-  ],
-  devServer: {
-    // historyApiFallback: {
-    //   index: '/dist/h5/index.html'
-    // },
-    host: '0.0.0.0',
-    disableHostCheck: true
-  }
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, 'public/index.html')
+    }),
+    new MiniCssExtractPlugin({
+      filename: 'css/[name].css',
+      chunkFilename: 'css/[name].css'
+    })
+  ]
 }
