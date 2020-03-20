@@ -2,7 +2,9 @@ const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
-const { resolve } = require('./utils')
+const { resolve, generateDllReferences, generateAddAssests } = require('./utils')
+
+const isDev = process.env.NODE_ENV !== 'production'
 
 module.exports = {
   entry: {
@@ -27,10 +29,23 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.js$/,
+        loader: 'babel-loader',
+        // exclude: [resolve('node_modules')],
+        include: [
+          resolve('src')
+        ],
+        options: {
+          cacheDirectory: true // 默认目录 node_modules/.cache/babel-loader
+        }
+      },
+      {
         test: /\.vue$/,
         loader: 'vue-loader',
         options: {
-          prettify: false // 在开发环境下，不使用 prettier 格式化编译后的模板渲染代码
+          prettify: false, // 在开发环境下，不使用 prettier 格式化编译后的模板渲染代码
+          cacheDirectory: resolve('node_modules/.cache/vue-loader'),
+          cacheIdentifier: 'vue'
         }
       },
       {
@@ -49,12 +64,10 @@ module.exports = {
       {
         test: /\.styl(us)?$/,
         use: [
-          {
+          isDev ? 'vue-style-loader' : {
             loader: MiniCssExtractPlugin.loader,
             options: {
               publicPath: '../',
-              hmr: process.env.NODE_ENV === 'development',
-              reloadAll: true
             }
           },
           {
@@ -74,7 +87,12 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader']
+        use: [isDev ? 'vue-style-loader' : {
+          loader: MiniCssExtractPlugin.loader,
+          options: {
+            publicPath: '../',
+          }
+        }, 'css-loader']
       },
       {
         test: /\.(woff2?|eot|ttf|otf|svg)(\?.*)?$/i,
@@ -96,6 +114,8 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: 'css/[name].[contenthash:8].css',
       chunkFilename: 'css/[name].[contenthash:8].css'
-    })
+    }),
+    ...generateAddAssests(),
+    ...generateDllReferences()
   ]
 }

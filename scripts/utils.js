@@ -1,6 +1,8 @@
 const webpack = require('webpack')
 const merge = require('webpack-merge')
 const path = require('path')
+const glob = require('glob')
+const AddAssestHtmlWebpackPlugin = require('add-asset-html-webpack-plugin')
 
 const _memorize = fn => {
   const cache = {}
@@ -41,8 +43,38 @@ const webpackStatsPrint = function (stats) {
 }
 
 
+/**
+ * @description 引用和 dll 建立映射关系
+ */
+const generateDllReferences = function () {
+  const manifests = glob.sync(`${resolve('dll')}/*.json`)
+
+  return manifests.map(file => {
+    return new webpack.DllReferencePlugin({
+      manifest: file
+    })
+  })
+}
+
+/**
+ * @description 把 dll 加入到 html 文件
+ */
+const generateAddAssests = function () {
+  const dlls = glob.sync(`${resolve('dll')}/*.js`)
+
+  return dlls.map(file => {
+    return new AddAssestHtmlWebpackPlugin({
+      filepath: file,
+      outputPath: '/dll',
+      publicPath: '/dll'
+    })
+  })
+}
+
 module.exports = {
   resolve,
   generateWebpackConfig,
-  webpackStatsPrint
+  webpackStatsPrint,
+  generateDllReferences,
+  generateAddAssests
 }
