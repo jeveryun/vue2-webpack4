@@ -3,7 +3,7 @@ const config = require('./config')
 const { resolve } = require('./utils')
 
 const webpackConfig = {
-  model: 'production',
+  mode: 'production',
   devtool: config.production.sourceMap ? 'cheap-module-eval-source-map' : 'none',
   output: {
     filename: '[name].[thunkhash:8].js',
