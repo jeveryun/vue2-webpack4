@@ -6,14 +6,15 @@
   "scripts": {
     "start": "npm run dev",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack-dev-server --inline --hot --mode=development",
+    "dev": "webpack-dev-server --processs --config scripts/build.js",
     "dev2": "webpack-dev-server --inline --hot --mode=development --env=more-entry,b",
-    "build": "webpack --config webpack.config.js"
+    "build": "node scripts/build.js production"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "autoprefixer": "^9.6.0",
+    "cli-spinner": "^0.2.10",
     "css-loader": "^3.0.0",
     "file-loader": "^4.0.0",
     "html-webpack-plugin": "^3.2.0",
@@ -28,7 +29,8 @@
     "vue-template-compiler": "^2.6.11",
     "webpack": "^4.42.0",
     "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.10.3"
+    "webpack-dev-server": "^3.10.3",
+    "webpack-merge": "^4.2.2"
   },
   "dependencies": {
     "vue-router": "^3.1.6",
