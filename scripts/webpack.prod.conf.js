@@ -1,29 +1,34 @@
-const { CleanWebpackPlugin } = require('clean-webpack-plugin')
-const TerserJSPlugin = require('terser-webpack-plugin')
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+const {
+  CleanWebpackPlugin
+} = require('clean-webpack-plugin')
+const TerserJSPlugin = require("terser-webpack-plugin")
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin")
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-
 const config = require('./config')
-// const { resolve } = require('./utils')
+// const {
+//   resolve
+// } = require('./utils')
 
 const webpackConfig = {
+  // mode: 'development',
   mode: 'production',
-  devtool: config.production.sourceMap ? 'cheap-module-eval-source-map' : 'none',
+  devtool: config.production.sourceMap ?
+    'cheap-module-source-map' : 'none',
   output: {
-    filename: '[name].[thunkhash:8].js',
-    chunkFilename: '[name].[contentHash:8].chunk.js'
+    filename: '[name].[contentHash:5].js',
+    chunkFilename: '[name].[contentHash:5].chunk.js'
   },
   optimization: {
     minimizer: [
       new TerserJSPlugin({
-        parallel: true // 开启多线程
+        parallel: true // 开启多线程压缩
       }),
       new OptimizeCSSAssetsPlugin({})
     ],
     splitChunks: {
       chunks: 'all',
-      minSize: 20000,
+      minSize: 20000, // 正常设置 20000+ 即 20k+ ，但这里我们的公共文件只有几行代码，所以设置为 1
       maxSize: 0,
       minChunks: 1,
       maxAsyncRequests: 5,
@@ -64,21 +69,25 @@ const webpackConfig = {
   },
   plugins: [
     new CleanWebpackPlugin(),
-    new CopyWebpackPlugin([
-      {
+    new CopyWebpackPlugin([{
         from: 'static/',
         to: 'static/'
+      },
+      {
+        from: 'modules/',
+        to: 'modules/'
       }
     ]),
     new MiniCssExtractPlugin({
-      filename: 'css/[name].[contenthash:8].css',
-      chunkFilename: 'css/[name].[contenthash:8].css'
+      filename: 'css/[name].[contenthash:5].css',
+      chunkFilename: 'css/[name].[contenthash:5].css'
     })
   ]
 }
 
 if (config.production.bundleAnalyzer) {
-  const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+  const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+    .BundleAnalyzerPlugin
   webpackConfig.plugins.push(new BundleAnalyzerPlugin())
 }
 

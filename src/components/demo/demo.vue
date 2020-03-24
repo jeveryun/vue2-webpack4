@@ -8,17 +8,17 @@
 </template>
 <script>
 import { mapState } from 'vuex'
-  export default {
-      data () {
-          //text: 'luckfine'
-      },
-      computed: {
-        ...mapState({ vueData: state => state.data.datalist })
-      },
-      mounted() {
-        this.$store.dispatch('data/getList')
-      }
-  }
+export default {
+    data () {
+        //text: 'luckfine'
+    },
+    computed: {
+      ...mapState({ vueData: state => state.data.datalist })
+    },
+    mounted() {
+      this.$store.dispatch('data/getList')
+    }
+}
 </script>
 <style>
 </style>

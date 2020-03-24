@@ -1,0 +1,5 @@
+/*!
+ * @auther jever
+ * @version 1.0.0
+ * @info hash:552df1d1afbedf7dfac0, chunkhash:1d0c9f667e25b2c4df7b, name:mod-a/function-a/page-b, filebase:page-b.ffcfa.chunk.js, query:, file:mod-a/function-a/page-b.ffcfa.chunk.js
+ */

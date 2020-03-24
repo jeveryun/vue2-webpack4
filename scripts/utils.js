@@ -1,8 +1,8 @@
 const webpack = require('webpack')
+const AddAssestHtmlWebpackPlugin = require('add-asset-html-webpack-plugin')
+const glob = require('glob')
 const merge = require('webpack-merge')
 const path = require('path')
-const glob = require('glob')
-const AddAssestHtmlWebpackPlugin = require('add-asset-html-webpack-plugin')
 
 const _memorize = fn => {
   const cache = {}
@@ -18,31 +18,6 @@ const _resolve = (...args) => {
 
 const resolve = _memorize(_resolve)
 
-const generateWebpackConfig = production => {
-  if (production) {
-    process.env.NODE_ENV = 'production'
-    return merge(require('./webpack.prod.conf'), require('./webpack.base.conf'))
-  } else {
-    process.env.NODE_ENV = 'development'
-    return merge(require('./webpack.dev.conf'), require('./webpack.base.conf'))
-  }
-}
-
-const webpackStatsPrint = function (stats) {
-  console.log(
-    stats
-      .toString({
-        colors: true,
-        modules: false,
-        children: false,
-        chunks: false,
-        chunkModules: false
-      })
-      .replace(/\n.*?static.*?(?=\n)/g, '') + '\n'
-  );
-}
-
-
 /**
  * @description 引用和 dll 建立映射关系
  */
@@ -51,6 +26,7 @@ const generateDllReferences = function () {
 
   return manifests.map(file => {
     return new webpack.DllReferencePlugin({
+      // context: resolve(''),
       manifest: file
     })
   })
@@ -71,10 +47,41 @@ const generateAddAssests = function () {
   })
 }
 
+/**
+ * @description 生成 webpack 配置文件
+ * @param {String} env 环境
+ * @param {String} modName mod 名， mod 环境下特有属性
+ */
+const generateWebpackConfig = (env, modName = '') => {
+  process.env.NODE_ENV = env
+  if (env === 'production') {
+    return merge(require('./webpack.base.conf'), require('./webpack.prod.conf'))
+  } else if (env === 'mod') {
+    return merge(require('./webpack.base.conf'), require('./webpack.mod.conf')(modName))
+  } else {
+    return merge(require('./webpack.base.conf'), require('./webpack.dev.conf'))
+  }
+}
+
+const webpackStatsPrint = function (stats) {
+  console.log(
+    stats
+    .toString({
+      colors: true,
+      modules: false,
+      // If you are using ts-loader, setting this to true will make TypeScript errors show up during build.
+      children: false,
+      chunks: false,
+      chunkModules: false
+    })
+    .replace(/\n.*?static.*?(?=\n)/g, '') + '\n'
+  )
+}
+
 module.exports = {
   resolve,
-  generateWebpackConfig,
-  webpackStatsPrint,
   generateDllReferences,
-  generateAddAssests
+  generateAddAssests,
+  generateWebpackConfig,
+  webpackStatsPrint
 }

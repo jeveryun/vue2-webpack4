@@ -1,0 +1,5 @@
+/*!
+ * @auther jever
+ * @version 1.0.0
+ * @info hash:552df1d1afbedf7dfac0, chunkhash:fadf17206e98a5fad3ca, name:main, filebase:mod-a.js, query:, file:mod-a.js
+ */

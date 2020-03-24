@@ -1,19 +1,22 @@
 <template>
-    <div class="app"> <h1>luckfine</h1> 
-    <demo></demo></div>
+  <div id="app">
+    <router-link to="/">Home</router-link>
+    <router-link to="/mod/a/a/a">Module A</router-link>
+    <router-link to="/mod/b/a/a">Module B</router-link>
+    <router-view></router-view>
+  </div>
 </template>
+
 <script>
-import Demo from './components/demo/demo'
 export default {
-    data () {
-        //text: 'luckfine'
-    },
-    components: [Demo]
+  name: 'app'
 }
 </script>
-<style lang="stylus" scoped>
-.app {
-    color : red;
-    transform : translate(100px);
+
+<style lang="stylus">
+@import '~@/styles/main.styl';
+
+#app {
+  padding: 40px 20px;
 }
 </style>

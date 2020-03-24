@@ -1,7 +1,10 @@
 module.exports = {
   production: {
-    pwa: false, // 是否生成渐进式WEB应用 (Progressive Web App)
-    bundleAnalyzer: false, // 需要进行模块分析
-    sourceMap: false // 生成 sourceMap
+    // 是否生成渐进式WEB应用 (Progressive Web App)
+    pwa: false,
+    // 需要进行模块分析
+    bundleAnalyzer: false,
+    // 生成 sourceMap
+    sourceMap: true
   }
 }

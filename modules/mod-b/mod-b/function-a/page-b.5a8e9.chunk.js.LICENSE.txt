@@ -1,0 +1,5 @@
+/*!
+ * @auther jever
+ * @version 1.0.0
+ * @info hash:0a72accf3b373add1e2f, chunkhash:ba3b09a6ae5206dd326f, name:mod-b/function-a/page-b, filebase:page-b.5a8e9.chunk.js, query:, file:mod-b/function-a/page-b.5a8e9.chunk.js
+ */

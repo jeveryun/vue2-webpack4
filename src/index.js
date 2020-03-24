@@ -1,9 +1,10 @@
 import Vue from 'vue'
-import App from './app.vue'
-
-const root = document.createElement('div')
-document.body.appendChild(root)
+import App from './app'
+import router from './router'
+import store from './store'
 
 new Vue({
+  router,
+  store,
   render: h => h(App)
-}).$mount(root)
+}).$mount('#app')
